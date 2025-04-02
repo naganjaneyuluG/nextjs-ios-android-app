@@ -1,9 +1,7 @@
 name: iOS PR Build & Test
 
 on:
-  pull_request:
-    branches:
-      - main  # Change this to match your default branch
+  push:
 
 jobs:
   build:

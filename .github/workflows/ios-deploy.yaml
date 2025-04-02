@@ -16,6 +16,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          cd ios
           gem install bundler
           bundle install
           brew install swiftlint || true  # Install SwiftLint if not available

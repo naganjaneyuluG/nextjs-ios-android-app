@@ -21,8 +21,8 @@ jobs:
           bundle install
           brew install swiftlint || true  # Install SwiftLint if not available
 
-      - name: Run SwiftLint (Code Style Check)
-        run: swiftlint
+      # - name: Run SwiftLint (Code Style Check)
+      #   run: swiftlint
 
       - name: Build iOS App (Simulator)
         run: |

@@ -1,0 +1,41 @@
+name: iOS PR Build & Test
+
+on:
+  pull_request:
+    branches:
+      - main  # Change this to match your default branch
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Install Dependencies
+        run: |
+          gem install bundler
+          bundle install
+          brew install swiftlint || true  # Install SwiftLint if not available
+
+      - name: Run SwiftLint (Code Style Check)
+        run: swiftlint
+
+      - name: Build iOS App (Simulator)
+        run: |
+          xcodebuild clean build \
+          -workspace YourApp.xcworkspace \
+          -scheme YourAppScheme \
+          -destination 'platform=iOS Simulator,name=iPhone 14' \
+          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+
+      - name: Run Tests (Simulator)
+        run: |
+          xcodebuild test \
+          -workspace YourApp.xcworkspace \
+          -scheme YourAppScheme \
+          -destination 'platform=iOS Simulator,name=iPhone 14'

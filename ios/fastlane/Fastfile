@@ -1,23 +1,23 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
+default_platform(:ios)
 
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+platform :ios do
+  lane :simulator_build_check do
+    # Clean and get dependencies
+    sh("flutter pub get")
 
-lane :build_for_pr do
-  gym(
-    scheme: "YourAppScheme",  # Change to your actual scheme
-    destination: "generic/platform=iOS Simulator", 
-    export_method: "development",  # No signing required
-    skip_codesigning: true
-  )
+    # Build Flutter iOS for simulator
+    sh("flutter build ios --simulator")
+
+    # Xcode build using Fastlane gym (optional, since `flutter build ios` already does it)
+    gym(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      destination: "generic/platform=iOS Simulator",
+      clean: true,
+      skip_package_ipa: true,
+      configuration: "Debug",
+      export_method: "development",
+      output_directory: "./build/simulator_build"
+    )
+  end
 end

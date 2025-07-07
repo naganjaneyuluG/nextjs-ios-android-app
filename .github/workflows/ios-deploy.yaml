@@ -1,1 +1,41 @@
+name: iOS PR Simulator Build
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+
+jobs:
+  ios-simulator-build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.22.0'
+
+    - name: Install Ruby and Bundler
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+
+    - name: Install Fastlane
+      working-directory: ios
+      run: |
+        gem install bundler
         bundle install
+
+    - name: Install CocoaPods
+      working-directory: ios
+      run: |
+        brew install cocoapods
+        pod install
+
+    - name: Run Simulator Build Lane
+      working-directory: ios
+      run: bundle exec fastlane simulator_build_check
